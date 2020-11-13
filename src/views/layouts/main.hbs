@@ -12,11 +12,11 @@
 
 </head>
 <body>
-    <p>Navegation</p>
-        <main class="container">
+    {{> navigation}}
+        <main class="container" style="padding-top: 10px;">
             {{> messages}}
+            {{> errors}}
             {{{body}}}
         </main>
-    <p>Footer</p>
 </body>
 </html>

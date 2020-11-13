@@ -1,12 +1,13 @@
 const express = require('express')
 const router = express.Router()
 const Note = require('../models/Note')
+const { isAuthenticated } = require('../helpers/auth')
 
-router.get('/notes/add', (req, res)=>{
+router.get('/notes/add', isAuthenticated, (req, res)=>{
     res.render('notes/new-notes')
 })
 
-router.post('/notes/new-note', async(req, res)=>{
+router.post('/notes/new-note', isAuthenticated, async(req, res)=>{
     const { title, description } = req.body
     const errors = []
 
@@ -26,10 +27,9 @@ router.post('/notes/new-note', async(req, res)=>{
         req.flash('success_msg', 'Note Added Succesfully')
         res.redirect('/notes')
     }
-    
 })
 
-router.get('/notes', async(req, res)=>{
+router.get('/notes', isAuthenticated, async(req, res)=>{
     await Note.find().sort({date: 'desc'})
       .then(items => {
         const contexto = {
@@ -45,7 +45,7 @@ router.get('/notes', async(req, res)=>{
       })     
 })
 
-router.get('/notes/edit/:id', async(req, res)=>{
+router.get('/notes/edit/:id', isAuthenticated, async(req, res)=>{
     const note = await Note.findById(req.params.id)
     .then(data =>{
         return {
@@ -58,14 +58,14 @@ router.get('/notes/edit/:id', async(req, res)=>{
     res.render('notes/edit-notes', {note})
 })
 
-router.put('/notes/edit-note/:id', async(req, res) => {
+router.put('/notes/edit-note/:id', isAuthenticated,  async(req, res) => {
     const { title, description } = req.body
     await Note.findByIdAndUpdate(req.params.id, {title, description})
     req.flash('success_msg', 'Note edited Succesfully')
     res.redirect('/notes')
 })
 
-router.delete('/notes/delete/:id', async(req, res) => {
+router.delete('/notes/delete/:id', isAuthenticated, async(req, res) => {
     await Note.findByIdAndDelete(req.params.id)
     req.flash('success_msg', 'Note deleted Succesfully')
     res.redirect('/notes')
