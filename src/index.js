@@ -5,6 +5,8 @@ const methodOverrade = require('method-override')
 const session = require('express-session')
 const flash = require('connect-flash')
 const passport = require('passport')
+const handlebars =  require('handlebars')
+const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access')
 
 //initializations
 const app = express()
@@ -17,7 +19,8 @@ app.engine('.hbs', exphbs({
     defaultLayout: 'main',
     layoutsDir: path.join(app.get('views'), 'layouts'),
     partialsDir: path.join(app.get('views'), 'partials'),
-    extname: '.hbs'
+    extname: '.hbs',
+    handlebars: allowInsecurePrototypeAccess(handlebars)
 }))
 app.set('view engine', '.hbs')
 
